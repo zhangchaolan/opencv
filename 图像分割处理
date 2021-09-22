@@ -1,3 +1,4 @@
+#特征提取和参数测量
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt 
@@ -87,7 +88,7 @@ print("img1.shape",img1.shape)
 print("img2.shape",img2.shape)
 cv.waitKey()
 cv.destroyAllWindows()
-#高斯金字塔，向上采样
+#高斯金字塔，向上采样，层级越高分辨率越低
 img=cv.pyrUp(image1)
 img1=cv.pyrUp(img)
 img2=cv.pyrUp(img1)
@@ -129,7 +130,7 @@ M0=cv.pyrUp(img1)+I0
 M1=cv.pyrUp(img2)+I1
 M2=cv.pyrUp(img3)+I2
 cv.imshow("image",image)
-cv.imshow("M0",M0)
+cv.imshow("M0",M0)#获得高精度图像
 cv.imshow("M1",M1)
 cv.imshow("M2",M2)
 print("image.shape",image.shape)
