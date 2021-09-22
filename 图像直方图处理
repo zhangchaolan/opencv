@@ -1,0 +1,55 @@
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt 
+image=cv.imread("C:/111/huise.png",cv.IMREAD_ANYCOLOR)
+image1=cv.cvtColor(image,cv.COLOR_BGR2GRAY)#转换为8位灰度图
+cv.imshow("lean",image)
+cv.imshow("image1",image1)
+#线性变换法法直方图正规化
+imageMax=np.max(image)
+imageMin=np.min(image)
+min_1=0#最小灰度值
+max_1=255#最大灰度值
+m=float(max_1-min_1)/(imageMax-imageMin)#算a,b值
+n=min_1-min_1*m
+image1=m*image+n
+image1=image1.astype(np.uint8)#数据类型转换
+cv.imshow("image",image)
+plt.figure("原始直方图")
+plt.hist(image.ravel(),256)
+plt.figure("正规化后直方图")
+plt.hist(image1.ravel(),256)
+plt.show() 
+cv.waitKey()
+cv.destroyAllWindows()
+#调用opencv函数直方图正规化
+cv.imshow("image",image)
+plt.figure("原始直方图")#得写
+plt.hist(image.ravel(),256)#画直方图
+image1=cv.normalize(image,image,255,0,cv.NORM_MINMAX,cv.CV_8U)#直方图正规化
+plt.figure("正式化直方图")
+plt.hist(image1.ravel(),256)
+plt.show() 
+cv.waitKey()
+cv.destroyAllWindows()
+#图像均衡化
+equ=cv.equalizeHist(image1)
+cv.imshow("leanequ",equ)
+plt.figure("原始直方图")#得写
+plt.hist(image.ravel(),256)#画直方图
+#image1=cv.normalize(image,image,255,0,cv.NORM_MINMAX,cv.CV_8U)#直方图正规化
+plt.figure("正式化直方图")
+plt.hist(equ.ravel(),256)
+plt.show() 
+#自适应图像均衡化
+clahe=cv.createCLAHE(clipLimit=2.0,tileGridSize=(8,8))#clipLimit 颜色对比度的阈值titleGridSize 进行像素均衡化的网格大小，即在多少网格下进行直方图的均衡化操作
+dst=clahe.apply(image1)
+cv.imshow("clahe",dst)#自适应均衡化
+plt.figure("原始直方图")#得写
+plt.hist(image.ravel(),256)#画直方图
+#image1=cv.normalize(image,image,255,0,cv.NORM_MINMAX,cv.CV_8U)#直方图正规化
+plt.figure("正式化直方图")
+plt.hist(dst.ravel(),256)
+plt.show() 
+cv.waitKey()
+cv.destroyAllWindows()
