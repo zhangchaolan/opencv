@@ -1,0 +1,54 @@
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt 
+image1=cv.imread("C:/111/lean.png")
+#image1=cv.cvtColor(image,cv.COLOR_RGB2GRAY)
+#sober算子（用来运算图像灰度函数的梯度近似值,具有平滑噪声作用）
+Sobelx=cv.Sobel(image1,cv.CV_64F,1,0)
+Sobelx=cv.convertScaleAbs(Sobelx)
+Sobely=cv.Sobel(image1,cv.CV_64F,0,1)
+Sobelx=cv.convertScaleAbs(Sobely)
+Sobelxy=cv.Sobel(image1,cv.CV_64F,1,1)
+#Sobelxy=cv.convertScaleAbs(Sobelxy)
+#Sobelxy1 = cv.addWeighted(Sobelx,0.4,Sobely,0.8,0,)
+Sobelxy1=cv.addWeighted(Sobelx,0.5,Sobely,0.5,0,dtype=cv.CV_64F)#水平和垂直方向加权计算,为啥图像类型必须要写？
+cv.imshow("image1",image1)
+cv.imshow("Sobelx",Sobelx)
+cv.imshow("Sobely",Sobely)
+#cv.imshow("Sobelxy",Sobelxy)
+cv.imshow("Sobelxy1",Sobelxy1)
+cv.waitKey()
+cv.destroyAllWindows()
+#Scharr算子（精度更高）
+Scharrx=cv.Scharr(image1,cv.CV_64F,1,0)
+Scharrx=cv.convertScaleAbs(Scharrx)
+Scharry=cv.Scharr(image1,cv.CV_64F,0,1)
+Scharry=cv.convertScaleAbs(Scharry)
+#Scharrxy=cv.Scharr(image1,cv.CV_64F,1,1)
+#Sobelxy=cv.convertScaleAbs(Sobelxy)
+#Sobelxy1 = cv.addWeighted(Sobelx,0.4,Sobely,0.8,0,)
+Scharrxy=cv.addWeighted(Scharrx,0.5,Scharry,0.1,0)#水平和垂直方向加权计算,图像深度必须要写,dtype=cv.CV_32F
+cv.imshow("image1",image1)
+cv.imshow("Scharrx",Scharrx)
+cv.imshow("Scharry",Scharry)
+#cv.imshow("Sobelxy",Sobelxy)
+cv.imshow("Scharrxy",Scharrxy)
+cv.waitKey()
+cv.destroyAllWindows()
+#Canny边缘检测
+edg1=cv.Canny(image1,200,300)#设置阈值
+edg2=cv.Canny(image1,20,100)
+edg3=cv.Canny(image1,10,50)
+cv.imshow("edg1",edg1)
+cv.imshow("edg2",edg2)
+cv.imshow("edg3",edg3)
+cv.waitKey()
+cv.destroyAllWindows()
+#Laplacian算子（可检测更多边缘信息）
+laplacian=cv.Laplacian(image1,cv.CV_64F,ksize=5)#设置阈值,ksize默认值是多少？
+laplacian=cv.convertScaleAbs(laplacian)
+cv.imshow("image1",image1)
+cv.imshow("laplacian",laplacian)
+cv.waitKey()
+cv.destroyAllWindows()
+#高斯（高斯平滑）拉普拉斯边缘检测
