@@ -1,3 +1,4 @@
+#能调整分割区域形状（从图像内部提取能够表达和描述图像形状的信息）
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt 
@@ -27,7 +28,7 @@ cv.imshow("image",image)
 cv.imshow("r1",r1)
 cv.waitKey()
 cv.destroyAllWindows()
-#开运算，先腐蚀后膨胀,没有迭代次数一说
+#开运算，先腐蚀后膨胀,平滑边界，没有迭代次数一说
 k=np.ones((5,5),np.uint8)
 opening=cv.morphologyEx(image,cv.MORPH_OPEN,k)
 cv.imshow("image",image)
