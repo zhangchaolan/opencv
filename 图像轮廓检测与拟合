@@ -1,0 +1,107 @@
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt 
+image=cv.imread("C:/111/huzi.jpg")
+image1=cv.cvtColor(image,cv.COLOR_RGB2GRAY)
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+img=cv.drawContours(image1,contours,-1,(0,0,255),3)
+cv.imshow("img",img)
+print("轮廓类型：",type(contours))
+print("轮廓个数：",len(contours))
+cv.waitKey()
+cv.destroyAllWindows()
+#求与获得前景信息
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+mask=np.zeros(image.shape,np.uint8)#获取掩模
+mask=cv.drawContours(mask,contours,-1,(255,255,255),-1)#绘制轮廓，thickness改为-1
+cv.imshow("mask",mask)
+logimg=cv.bitwise_and(image,mask)
+cv.imshow("logimg",logimg)
+print("轮廓类型：",type(contours))
+print("轮廓个数：",len(contours))
+cv.waitKey()
+cv.destroyAllWindows()
+#获取边缘信息
+binaryImg=cv.Canny(image,50,200)
+h=cv.findContours(binaryImg,cv.RETR_TREE,cv.CHAIN_APPROX_NONE)#寻找轮廓，检索模式和近似方法不同
+contours=h[0]#提取轮廓
+temp=np.ones(binaryImg.shape,np.uint8)*255#创建白色幕布
+mask=cv.drawContours(temp,contours,-1,(255,255,255),-1)
+mask1=cv.drawContours(temp,contours,-1,(0,255,0),1)
+cv.imshow("binaryImg",binaryImg)
+cv.imshow("temp",temp)
+cv.imshow("mask",mask)
+cv.imshow("mask1",mask1)
+print("轮廓类型：",type(contours))
+print("轮廓个数：",len(contours))
+cv.waitKey()
+cv.destroyAllWindows()
+#轮廓周长近似
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+img=cv.drawContours(image1,contours,-1,(0,0,255),3)
+cv.imshow("img",img)
+n=len(contours)#获取轮廓格式？
+cntLen=[]#存储轮廓长度？
+for i in range(n):#显示每个轮廓长度？
+    cntLen.append(cv.arcLength(contours[i],True))
+    print("第"+str(i)+"个轮廓的长度是：%d"%cntLen[i])
+cv.waitKey()
+cv.destroyAllWindows()
+#轮廓面积近似
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+img=cv.drawContours(image,contours,-1,(0,0,255),3)
+cv.imshow("img",img)
+n=len(contours)#获取轮廓格式？
+cntLen=[]#存储轮廓长度？
+for i in range(n):#显示每个轮廓长度？
+    cntLen.append(cv.contourArea(contours[i],True))
+    print("第"+str(i)+"个轮廓的面积是：%d"%cntLen[i])
+cv.waitKey()
+cv.destroyAllWindows()
+#最小外包矩形
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+#img=cv.drawContours(image1,contours,-1,(0,0,255),3)
+#cv.imshow("img",img)
+rect=cv.minAreaRect(contours[0])#构建轮廓最小外包矩形
+points=cv.boxPoints(rect)#调整矩形返回值类型
+points=np.int0(points)#取整
+img=cv.drawContours(image,[points],0,(0,0,0),1)
+cv.imshow("result",img)
+cv.waitKey()
+cv.destroyAllWindows()     
+#最小外包圆形
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+(x,y),rad=cv.minEnclosingCircle(contours[0])#构建轮廓最小外圆形
+center=(int(x),int(y))
+rad=int(rad)#取整
+img=cv.circle(image,center,rad,(0,0,0),1)
+cv.imshow("result",img)
+cv.waitKey()
+cv.destroyAllWindows()    
+#最小外包三角形
+#最小外包椭圆
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+ellipse=cv.fitEllipse(contours[0])#构建最小外包椭圆
+img=cv.ellipse(image,ellipse,(0,0,0),1)
+cv.imshow("result",img)
+cv.waitKey()
+cv.destroyAllWindows()  
+#最优拟合直线
+ret,binary=cv.threshold(image1,150,255,cv.THRESH_BINARY)#二值化
+contours,hierarchy=cv.findContours(binary,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE)#查找图像轮廓信息
+row,col=image.shape[:2]
+[vx,vy,x,y]=cv.fitLine(contours[0],cv.DIST_L2,0,0.01,0.01)#构建最优拟合直线
+ly=int((-x*vy/vx)+y)#计算参数
+ry=int(((col-x)*vy/vx)+y)
+cv.line(image,(col-1,ry),(0,ly),(0,0,0),2)#绘制直线
+cv.imshow("result",image)
+cv.waitKey()
+cv.destroyAllWindows() 
+#霍夫检测直线
