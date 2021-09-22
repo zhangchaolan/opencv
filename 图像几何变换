@@ -1,0 +1,71 @@
+#平移缩放
+import cv2 as cv
+import numpy as np
+image=cv.imread("C:/111/lean.png")
+h,w=image.shape[:2]#读大小
+M=np.float32([[1,0,120],[0,1,-120]])#建立转换矩阵
+image1=cv.warpAffine(image,M,(w,h))#平移缩放函数
+cv.imshow("image",image)
+cv.imshow("image1",image1)
+cv.waitKey()
+cv.destroyAllWindows()
+#旋转
+import cv2 as cv
+import numpy as np
+image=cv.imread("C:/111/lean.png")
+h,w=image.shape[:2]#读大小，高，宽
+M=cv.getRotationMatrix2D((w/5,h/5),40,0.4)#旋转，以图像的高宽1/3旋转40度，缩小为原来的0.4
+image1=cv.warpAffine(image,M,(w,h))#旋转
+cv.imshow("image",image)
+cv.imshow("image1",image1)
+cv.waitKey()
+cv.destroyAllWindows()
+#复制
+import cv2 as cv
+import numpy as np
+image=cv.imread("C:/111/lean.png")
+h,w=image.shape[:2]#读大小
+map1=np.zeros(image.shape[:2],np.float32)#建立新图像
+map2=np.zeros(image.shape[:2],np.float32)
+for i in range(w): 
+    for j in range(h): 
+        map1.itemset((i,j),j)#访问图像
+        map1.itemset((i,j),i)
+    
+rst=cv.remap(image,map1,map2,cv.INTER_LINEAR)#实现复制图像，但其实用rst=image.copy()就能实现复制
+cv.imshow("image",image)
+cv.imshow("rst",rst)
+cv.waitKey()
+cv.destroyAllWindows()
+#翻转
+只将for循环改成如下：
+for i in range(w):
+    for j in range(h):
+        map1.itemset((i,j),j)
+        map2.itemset((i,j),w-1-i)#绕x轴翻转
+#投影        
+ import cv2 as cv
+ import numpy as np
+ image=cv.imread("C:/111/lean.png")
+ w,h=image.shape[:2]
+ src=np.array([[0,0],[w-1,0],[0,h-1],[w-1,h-1]],np.float32)#原图像的四个像素点
+ dst=np.array([[40,40],[w/2,20],[15,h/2],[w-40,h-40]],np.float32)#投影变换后的四个像素点
+ M=cv.getPerspectiveTransform(src,dst)#投影矩阵
+ imag1=cv.warpPerspective(image,M,(w,h),borderValue=125)#投影函数，（scr,M,disize,flags,boderMode,borderValue）
+ cv.imshow("image",image)
+ cv.imshow("imag1",imag1)
+ cv.waitKey()
+ cv.destroyAllWindows()
+  #极坐标转换
+ import cv2 as cv
+ import numpy as np
+ image=cv.imread("C:/111/polar.png")
+ M1=20#坐标转换系数
+ dst1=cv.logPolar(image,(250,249),M1,cv.WARP_FILL_OUTLIERS)#极坐标转换函数，坐标变换中心是（250，240），cv.表示转换方向
+  cv.imshow("dst1",dst1)
+ cv.waitKey()
+ cv.destroyAllWindows()
+ 
+  
+        
+   
