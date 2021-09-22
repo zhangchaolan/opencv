@@ -2,6 +2,7 @@
 import cv2 as cv
 import numpy as np
 image1=cv.imread("C:/111/caise.png")
+b,g,r=cv.split(image)#彩色图像分三个通道
 cv.imshow("image1",image1)
 image2=cv.cvtColor(image1,cv.COLOR_BGR2RGB)
 image3=cv.cvtColor(image1,cv.COLOR_BGR2GRAY)#八位灰度图
