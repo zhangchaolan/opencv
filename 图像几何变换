@@ -29,7 +29,7 @@ map1=np.zeros(image.shape[:2],np.float32)#建立新图像
 map2=np.zeros(image.shape[:2],np.float32)
 for i in range(w): 
     for j in range(h): 
-        map1.itemset((i,j),j)#访问图像
+        map1.itemset((i,j),j)#访问遍历图像，i，j是行列数
         map1.itemset((i,j),i)
     
 rst=cv.remap(image,map1,map2,cv.INTER_LINEAR)#实现复制图像，但其实用rst=image.copy()就能实现复制
@@ -43,7 +43,7 @@ for i in range(w):
     for j in range(h):
         map1.itemset((i,j),j)
         map2.itemset((i,j),w-1-i)#绕x轴翻转
-#投影        
+#三维空间转换——投影        
  import cv2 as cv
  import numpy as np
  image=cv.imread("C:/111/lean.png")
@@ -56,7 +56,7 @@ for i in range(w):
  cv.imshow("imag1",imag1)
  cv.waitKey()
  cv.destroyAllWindows()
-  #极坐标转换
+  #极坐标转换-校正圆形物体或者被包含在圆环的物体
  import cv2 as cv
  import numpy as np
  image=cv.imread("C:/111/polar.png")
