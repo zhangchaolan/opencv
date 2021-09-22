@@ -1,30 +1,31 @@
+#处理像素值差异较大的像素点，过滤噪声
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt 
 image=cv.imread("C:/111/zaosheng.png",cv.IMREAD_ANYCOLOR)
-#高斯滤波
+#高斯滤波，通过周围像素与卷积核的运算得到新的像素，越靠近中心点卷积核越大
 gauss=cv.GaussianBlur(image,(11,11),0,0)#高斯滤波函数（src,(卷积核大小)，sigmaX权重值，sigmaY权重值）
 cv.imshow("image",image)
 cv.imshow("gauss",gauss)
-#均值滤波
-means5=cv.blur(image,(5,5),(-1,-1))#（-1，-1）为默认锚点
+#均值滤波，取周围像素的均值，卷积核权重相同
+means5=cv.blur(image,(5,5),(-1,-1))#（-1，-1）为默认锚点，默认为卷积核中心点，卷积核的值同高斯滤波一样是奇数
 means10=cv.blur(image,(10,10),(-1,-1))
 cv.imshow("image",image)
 cv.imshow("means5",means5)
 cv.imshow("means10",means10)
 #卷积核越大，失真越严重
-#方框滤波
+#方框滤波（可是否选择对均值滤波结果归一化，但很显然，归一化的失真程度更低）
 box5_5=cv.boxFilter(image,-1,(5,5),(-1,-1),normalize=0)#默认深度是-1，卷积核大小（5，5），默认锚点（-1，-1），不进行归一化
 box5_1=cv.boxFilter(image,-1,(5,5),(-1,-1),normalize=1)#进行归一化
 cv.imshow("image",image)
 cv.imshow("box5_5",box5_5)
 cv.imshow("box5_1",box5_1)
-#中值滤波(处理椒盐噪声且不会产生图像模糊的现象)
-median=cv.medianBlur(image,5)#这里的卷积核大小不写坐标了
+#中值滤波(中间值代替像素值，处理椒盐噪声且不会产生图像模糊的现象)
+median=cv.medianBlur(image,5)#这里的卷积核大小不写几行几列了
 cv.imshow("image",image)
 cv.imshow("median",median)
 #双边滤波，（计算像素点考虑到距离信息和色差信息，能保护边缘信息）
-bilateral=cv.bilateralFilter(image,5,1000,1000)#双边滤波函数，卷积核不写坐标了，像素点为100，sigma值为100，越大表示越多点参与滤波
+bilateral=cv.bilateralFilter(image,5,100,100)#双边滤波函数，滤波时选取的空间距离参数（实际情况下）为5，色差范围为100，sigma值为100，越大表示越多点参与滤波
 cv.imshow("image",image)
 cv.imshow("bilateral",bilateral)
 #自定义卷积核滤波处理
