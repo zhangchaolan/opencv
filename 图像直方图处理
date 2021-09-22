@@ -1,3 +1,4 @@
+#通过统计灰度级像素个数对图像进行处理，以达到增强图像效果的目的
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt 
@@ -5,7 +6,7 @@ image=cv.imread("C:/111/huise.png",cv.IMREAD_ANYCOLOR)
 image1=cv.cvtColor(image,cv.COLOR_BGR2GRAY)#转换为8位灰度图
 cv.imshow("lean",image)
 cv.imshow("image1",image1)
-#线性变换法法直方图正规化
+#线性变换法法直方图正规化，调节图像对比度，拉伸灰度级，使得图像更清晰
 imageMax=np.max(image)
 imageMin=np.min(image)
 min_1=0#最小灰度值
@@ -26,7 +27,7 @@ cv.destroyAllWindows()
 cv.imshow("image",image)
 plt.figure("原始直方图")#得写
 plt.hist(image.ravel(),256)#画直方图
-image1=cv.normalize(image,image,255,0,cv.NORM_MINMAX,cv.CV_8U)#直方图正规化
+image1=cv.normalize(image,image,255,0,cv.NORM_MINMAX,cv.CV_8U)#直方图正规化，输入矩阵，结构元，结构元锚点，腐蚀操作次数，边界扩充类型，边界扩充值
 plt.figure("正式化直方图")
 plt.hist(image1.ravel(),256)
 plt.show() 
@@ -41,13 +42,12 @@ plt.hist(image.ravel(),256)#画直方图
 plt.figure("正式化直方图")
 plt.hist(equ.ravel(),256)
 plt.show() 
-#自适应图像均衡化
+#自适应图像均衡化-限制对比度，防止有噪声的情况下噪声被扩大
 clahe=cv.createCLAHE(clipLimit=2.0,tileGridSize=(8,8))#clipLimit 颜色对比度的阈值titleGridSize 进行像素均衡化的网格大小，即在多少网格下进行直方图的均衡化操作
 dst=clahe.apply(image1)
 cv.imshow("clahe",dst)#自适应均衡化
 plt.figure("原始直方图")#得写
 plt.hist(image.ravel(),256)#画直方图
-#image1=cv.normalize(image,image,255,0,cv.NORM_MINMAX,cv.CV_8U)#直方图正规化
 plt.figure("正式化直方图")
 plt.hist(dst.ravel(),256)
 plt.show() 
