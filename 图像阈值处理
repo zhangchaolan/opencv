@@ -1,9 +1,10 @@
+#剔除高于一定值或者低于一定值的点，完成不同类像素区域分割
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt 
 image=cv.imread("C:/111/lean.png",cv.IMREAD_ANYCOLOR)
 image1=cv.cvtColor(image,cv.COLOR_BGR2GRAY)
-#图像二值化处理
+#图像二值化处理（大于设定值像素值设置为255，小于像设置为0）
 ret,dst=cv.threshold(image,127,255,cv.THRESH_BINARY)#原图像，阈值，最大值，分割类型
 cv.imshow("image",image)
 cv.imshow("dst",dst)
@@ -23,16 +24,16 @@ cv.imshow("dst",dst)
 ret,dst=cv.threshold(image,127,255,cv.THRESH_TOZERO_INV)
 cv.imshow("image",image)
 cv.imshow("dst",dst)
-#局部阈值处理(保留了细节信息)该函数的图像必须是8位单通道图像，所以要灰度处理
-admean=cv.adaptiveThreshold(image1,255,cv.ADAPTIVE_THRESH_MEAN_C,cv.THRESH_BINARY,5,3)#邻域权重相同方式处理图像，块大小为5，常量为3
-adguass=cv.adaptiveThreshold(image1,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,5,3)#高斯方程式处理处理图像，块大小为5，常量为3
+#局部阈值处理(保留细节信息)该函数的图像必须是8位单通道图像，所以要灰度处理
+admean=cv.adaptiveThreshold(image1,255,cv.ADAPTIVE_THRESH_MEAN_C,cv.THRESH_BINARY,5,3)#邻域权重相等方式的阈值处理，块大小为5，常量为3
+adguass=cv.adaptiveThreshold(image1,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,5,3)#权重为高斯分布的局部阈值处理，块大小为5，常量为3
 cv.imshow("image",image)
 cv.imshow("admean",admean)
 cv.imshow("adguass",adguass)
 #Otsu阈值处理(自动设置阈值)
 image1=image1.astype("uint8")
-ret,dst=cv.threshold(image,127,255,cv.THRESH_BINARY)
-t,Ostu=cv.threshold(image1,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)#Otsu阈值处理
+ret,dst=cv.threshold(image,127,255,cv.THRESH_BINARY)#二值化阈值处理
+t,Ostu=cv.threshold(image1,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)#Otsu阈值处理，相对于二值化多传递了一个参数
 cv.imshow("image",image)
 cv.imshow("dst",dst)
 cv.imshow("Ostu",Ostu)
